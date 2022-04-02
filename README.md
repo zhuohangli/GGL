@@ -64,7 +64,7 @@ Part of the code is adapted from [Inverting Gradients](https://github.com/JonasG
 
 ## References
 If you find the code useful for your research, please consider citing
-
+```
 @inproceedings{
   li2022auditing,
   title={Auditing Privacy Defenses in Federated Learning via Generative Gradient Leakage},
@@ -73,3 +73,4 @@ If you find the code useful for your research, please consider citing
   year={2022},
   url={https://arxiv.org/abs/2203.15696}
 }
+```
