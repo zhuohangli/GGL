@@ -61,3 +61,15 @@ Left: Orignal image, Right: Reconstructed image from sparse gradients
 ## Acknowledgement
 
 Part of the code is adapted from [Inverting Gradients](https://github.com/JonasGeiping/invertinggradients) and [Soteria](https://github.com/jeremy313/Soteria). The BigGAN implementation and pretrained weights are from [PyTorch pretrained BigGAN](https://github.com/huggingface/pytorch-pretrained-BigGAN). For Bayesian otimization, we used [TuRBO](https://github.com/uber-research/TuRBO).
+
+## References
+If you find the code useful for your research, please consider citing
+
+@inproceedings{
+  li2022auditing,
+  title={Auditing Privacy Defenses in Federated Learning via Generative Gradient Leakage},
+  author={Li, Zhuohang and Zhang, Jiaxin and Liu, Luyang and Liu, Jian},
+  booktitle={IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR 2022)},
+  year={2022},
+  url={https://arxiv.org/abs/2203.15696}
+}
