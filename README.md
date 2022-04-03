@@ -44,7 +44,7 @@ python imagenet_biggan.py --n_trials 1 --budget 500 --ng_method CMA --exp_name C
 
 To evaluate adaptive attack against defense with a chosen parameter, use
 ```
-python imagenet_biggan.py --gpu 0 --n_trials 1 --budget 500 --ng_method --defense compression --d_param 90 --ng_method CMA --exp_name CMA_compression_90_ada --adaptive
+python imagenet_biggan.py --gpu 0 --n_trials 1 --budget 500 --defense compression --d_param 90 --ng_method CMA --exp_name CMA_compression_90_ada --adaptive
 ```
 
 ### Result
