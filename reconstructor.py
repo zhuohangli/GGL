@@ -44,7 +44,7 @@ class BOReconstructor():
 
         labels = self.infer_label(input_gradient)
         print('Inferred label: {}'.format(labels))
-        
+
         if self.defense_setting is not None:
             if 'clipping' in self.defense_setting:
                 total_norm = torch.norm(torch.stack([torch.norm(g, 2) for g in input_gradient]), 2)
@@ -142,7 +142,6 @@ class BOReconstructor():
         if defense_setting is not None:
             if 'noise' in defense_setting:
                 pass
-#                 trial_gradient = defense.additive_noise(trial_gradient, std=defense_setting['noise'])
             if 'clipping' in defense_setting:
                 trial_gradient = defense.gradient_clipping(trial_gradient, bound=defense_setting['clipping'])
             if 'compression' in defense_setting:
@@ -188,11 +187,8 @@ class NGReconstructor():
         self.weight = None
         self.defense_setting = defense_setting
 
-        # parametrization = ng.p.Array(shape=search_dim)
         parametrization = ng.p.Array(init=np.random.rand(search_dim[0]))
-        #parametrization = ng.p.Array(init=np.zeros(search_dim))#.set_mutation(sigma=1.0)
         self.optimizer = ng.optimizers.registry[strategy](parametrization=parametrization, budget=budget)
-#         self.optimizer.parametrization.register_cheap_constraint(lambda x: (x>=-2).all() and (x<=2).all())
 
         self.fl_setting = {'loss_fn':loss_fn, 'fl_model':fl_model, 'num_classes':num_classes}
 
@@ -212,7 +208,7 @@ class NGReconstructor():
 
         labels = self.infer_label(input_gradient)
         print('Inferred label: {}'.format(labels))
-        
+
         if self.defense_setting is not None:
             if 'clipping' in self.defense_setting:
                 total_norm = torch.norm(torch.stack([torch.norm(g, 2) for g in input_gradient]), 2)
@@ -293,7 +289,7 @@ class NGReconstructor():
         # adaptive attack against defense
         if defense_setting is not None:
             if 'noise' in defense_setting:
-                trial_gradient = defense.additive_noise(trial_gradient, std=defense_setting['noise'])
+                pass
             if 'clipping' in defense_setting:
                 trial_gradient = defense.gradient_clipping(trial_gradient, bound=defense_setting['clipping'])
             if 'compression' in defense_setting:
@@ -347,10 +343,6 @@ class AdamReconstructor():
 
         self.optimizer = torch.optim.Adam([self.z], betas=(0.9, 0.999), lr=lr)
 
-#         self.scheduler = torch.optim.lr_scheduler.MultiStepLR(self.optimizer,
-#                                                             milestones=[budget // 2.667, budget // 1.6,
-#                                                                         budget // 1.142], gamma=0.1)
-
         self.fl_setting = {'loss_fn':loss_fn, 'fl_model':fl_model, 'num_classes':num_classes}
 
         if use_weight:
@@ -394,7 +386,6 @@ class AdamReconstructor():
 
             loss.backward()
             self.optimizer.step()
-#             self.scheduler.step()
 
             if use_pbar:
                 pbar.set_description("Loss {:.6}".format(loss.item()))
@@ -441,20 +432,19 @@ class AdamReconstructor():
 
         c = torch.nn.functional.one_hot(labels, num_classes=num_classes).to(input_gradient[0].device)
 
-        with torch.no_grad():
-            x = generator(z, c.float(), 1)
+        x = generator(z, c.float(), 1)
 
         x = nn.functional.interpolate(x, size=(224, 224), mode='area')
 
         # compute the trial gradient
         target_loss, _, _ = loss_fn(fl_model(x), labels)
-        trial_gradient = torch.autograd.grad(target_loss, fl_model.parameters())
-        trial_gradient = [grad.detach() for grad in trial_gradient]
+        trial_gradient = torch.autograd.grad(target_loss, fl_model.parameters(), create_graph=True)
+        trial_gradient = [grad for grad in trial_gradient]
 
         # adaptive attack against defense
         if defense_setting is not None:
             if 'noise' in defense_setting:
-                trial_gradient = defense.additive_noise(trial_gradient, std=defense_setting['noise'])
+                pass
             if 'clipping' in defense_setting:
                 trial_gradient = defense.gradient_clipping(trial_gradient, bound=defense_setting['clipping'])
             if 'compression' in defense_setting:
